@@ -1,4 +1,4 @@
-rxjs-splash
+RxJS-Splash
 ===========
 
 ko-style bindings for rx
