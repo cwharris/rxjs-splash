@@ -1,0 +1,30 @@
+{
+  "name": "rx",
+  "title": "Reactive Extensions for JavaScript (RxJS)",
+  "description": "Library for composing asynchronous and event-based operations in JavaScript",
+  "version": "2.0.0",
+  "homepage": "http://msdn.microsoft.com/en-us/data/gg577609.aspx",
+  "author": {
+    "name": "Cloud Programmability Team",
+    "url": "https://github.com/Reactive-Extensions/RxJS/blob/master/authors.txt"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Reactive-Extensions/RxJS.git"
+  },
+  "licenses": [
+    {
+      "type": "MICROSOFT REACTIVE EXTENSIONS FOR JAVASCRIPT AND .NET LIBRARIES",
+      "url": "https://github.com/Reactive-Extensions/RxJS/blob/master/license.txt"
+    }
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "grunt": "~0.3.9"
+  },
+  "keywords": [],
+  "main": "rx.node.js",
+  "readme": "# RxJS - Reactive Extensions for JavaScript #\r\n\r\n----------\r\n\r\nThe Reactive Extensions for JavaScript (RxJS) are a set of libraries for composing and coordinating asynchronous and event-based programming that works across many JavaScript runtimes including all browsers and Node.js.\r\n\r\nThis set of libraries include:\r\n\r\n- **rx.js** - Core library\r\n- **rx.aggregates.js** - aggregation event processing query operations\r\n- **rx.binding.js** - binding operators including multicast, publish, publishLast, publishValue, and replay\r\n- **rx.coincidence.js** - reactive coincidence join event processing query operations\r\n- **rx.experimental.js** - experimental operators including imperative operators and forkJoin\r\n- **rx.joinpatterns.js** - join patterns event processing query operations\r\n- **rx.testing.js** - used to write unit tests for complex event processing queries.\r\n- **rx.time.js** - time-based event processing query operations.\r\n\r\n\r\n## Installation and Usage ##\r\n\r\n----------\r\nThere are multiple ways of getting started with the Reactive Extensions including:\r\n\r\nIn a Browser:\r\n\r\n    <script src=\"rx.js><script>\r\n\r\nAlong with a number of our extras for RxJS:\r\n    \r\n    <script src=\"rx.aggregates.js><script>\r\n    <script src=\"rx.binding.js><script>\r\n    <script src=\"rx.coincidencejs><script>\r\n    <script src=\"rx.experimental.js><script>\r\n    <script src=\"rx.joinpatterns.js><script>\r\n    <script src=\"rx.testing.js><script>\r\n    <script src=\"rx.time.js><script>\r\n\r\nInstalling via NPM:\r\n\r\n    npm install rxjs\r\n    npm install -g rxjs\r\n\r\nUsing in Node.js:\r\n\r\n    var Rx = require('rx');\r\n\r\nInstalling all of RxJS via NuGet:\r\n\r\n    Install-Package RxJS-All\r\n\r\nOr install via NuGet individual packages:\r\n\r\n    Install-Package RxJS-Main\r\n    Install-Package RxJS-Aggregates\r\n    Install-Package RxJS-Binding\r\n    Install-Package RxJS-Coincidence\r\n    Install-Package RxJS-Experimental\r\n    Install-Package RxJS-JoinPatterns\r\n    Install-Package RxJS-Testing\r\n    Install-Package RxJS-Time\r\n\r\nUsing RxJS with an AMD loader such as Require.js\r\n\r\n    require({\r\n        'paths': {\r\n            'rx': 'path/to/rx.js'\r\n        }\r\n    },\r\n    ['rx'], function(Rx) {\r\n        var obs = Rx.Observable.returnValue(42);\r\n        obs.subscribe(function (x) { console.log(x); });\r\n    });\r\n\r\n## License ##\r\n\r\n----------\r\n\r\nSource files are licensed under the [Microsoft Reference Source License (MS-RSL)](http://referencesource.microsoft.com/referencesourcelicense.aspx)\r\n\r\nMinimized files are licensed under the [Reactive Extensions for .NET and JavaScript License](https://github.com/Reactive-Extensions/RxJS/blob/master/license.txt).",
+  "_id": "rx@2.0.0",
+  "_from": "rx"
+}
