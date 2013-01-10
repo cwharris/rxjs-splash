@@ -13,12 +13,13 @@ HTML
     </div>
 ```
 
-Coffee-Script
+JavaScript
 -------------
 ```coffee-script
 
-    vm = 
-      name: new Rx.BehaviorSubject 'Christopher Harris'
+    vm = { 
+      name: new Rx.BehaviorSubject('Christopher Harris')
+    };
 
-    sx.bind vm
+    sx.bind(vm);
 ```
