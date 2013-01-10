@@ -20,12 +20,18 @@ class Splash
       bindings: self.parseBindings vm, target.attr 'data-splash'
 
     bindings.each ->
-      console.log this
-      console.log self.binders[key].init(this.target, {options: value}) for key, value of this.bindings
+      self.binders[key].init(this.target, {options: value}) for key, value of this.bindings
 
   parseBindings: (vm, binding) ->
     # this still needs to be implemented, obviously
-    text: vm['age']
+    keys = []
+    values = []
+
+    for key, value of vm
+      keys.push key
+      values.push value
+
+    new Function(keys, 'return {' + binding + '};').apply(undefined, values)
 
 window.sx = new Splash
 
@@ -47,4 +53,11 @@ sx.binders.value =
 sx.binders.css =
   init: (element, o) ->
     target = $ element
-    o.options.subscribe (x) -> target.toggleClass o.options, x
+    for css, source of o.options
+      source.subscribe (x) ->
+        target.toggleClass css, x
+
+
+
+
+

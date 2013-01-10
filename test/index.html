@@ -10,13 +10,18 @@
   <script src='../lib/rx.splash.js'></script>
   <script src='./index.js'></script>
   <link rel='stylesheet' href='../lib/bootstrap/css/bootstrap.css' />
+  <style>
+    .highlight {
+      background-color: red;
+    }
+  </style>
 </head>
 <body>
   <div>
-    <!-- <div>Name: <span data-splash='text: name'></span></div> -->
-    <!-- <div>Dob: <span data-splash='text: dob'></span></div> -->
+    <div>Name: <span data-splash='text: name'></span></div>
+    <div>Dob: <span data-splash='text: dob'></span></div>
     <div>Age: <span data-splash='text: age'></span></div>
-    <!-- <button class='btn' data-bind='css: {"btn-warning": warning}'>Click Me</button> -->
+    <button class='btn' data-splash='css: { "btn-warning": isHighlighted }'>Click Me</button>
   <div>
 </body>
 </html>

@@ -9,8 +9,14 @@
         var _this = this;
         this.name = new Rx.BehaviorSubject(name || 'no name');
         this.dob = new Rx.BehaviorSubject(dob || new Date);
-        this.age = Rx.Observable.interval(1).select(function() {
-          return (new Date - _this.dob.value) / 1000 / 60 / 60 / 24 / 365;
+        this.diff = Rx.Observable.interval(1).select(function() {
+          return new Date - _this.dob.value;
+        });
+        this.age = this.diff.select(function(x) {
+          return x / 1000 / 60 / 60 / 24 / 365;
+        });
+        this.isHighlighted = this.diff.select(function(x) {
+          return Math.floor(x / 250) % 2 === 0;
         });
       }
 
