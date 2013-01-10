@@ -1,4 +1,4 @@
 rxjs-splash
 ===========
 
-read-only ko-style bindings for rx
+ko-style bindings for rx
