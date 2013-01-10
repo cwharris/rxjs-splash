@@ -5,6 +5,7 @@
   <script src='../lib/jquery/jquery-1.8.3.min.js'></script>
   <script src='../lib/rx/rx.min.js'></script>
   <script src='../lib/rx/rx.binding.min.js'></script>
+  <script src='../lib/rx/rx.joinpatterns.min.js'></script>
   <script src='../lib/rx/rx.time.min.js'></script>
   <script src='../lib/rx/rx.jquery.min.js'></script>
   <script src='../lib/rx.splash.js'></script>
@@ -21,7 +22,10 @@
     <div>Name: <span data-splash='text: name'></span></div>
     <div>Dob: <span data-splash='text: dob'></span></div>
     <div>Age: <span data-splash='text: age'></span></div>
-    <button class='btn' data-splash='css: { "btn-warning": isHighlighted }'>Click Me</button>
+    <button class='btn' data-splash='css: { "btn-warning": isHighlighted }, text: age'>Click Me</button>
+    <div>
+      <input type="text" data-splash='value: name'></input>
+    </div>
   <div>
 </body>
 </html>

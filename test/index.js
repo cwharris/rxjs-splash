@@ -15,8 +15,8 @@
         this.age = this.diff.select(function(x) {
           return x / 1000 / 60 / 60 / 24 / 365;
         });
-        this.isHighlighted = this.diff.select(function(x) {
-          return Math.floor(x / 250) % 2 === 0;
+        this.isHighlighted = this.diff.sample(1000).select(function(x) {
+          return Math.floor(x / 7) % 2 === 0;
         });
       }
 

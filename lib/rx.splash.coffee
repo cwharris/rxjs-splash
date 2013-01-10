@@ -47,8 +47,24 @@ sx.binders.text =
 sx.binders.value =
   init: (element, o) ->
     target = $ element
-    o.options.subscribe (x) -> target.val x
-    # target.on 'change', (x) -> o.source.onNext x
+    focus = target.onAsObservable('focus')
+    blur = target.onAsObservable('blur')
+    source = o.options
+    set = source
+      .takeUntil(focus)
+      .concat(blur.take 1)
+      .repeat()
+      .subscribe (x) ->
+        target.val x
+
+    console.log typeof o.options
+
+    get = target
+      .onAsObservable('change')
+      .subscribe (x) ->
+        source.onNext target.val()
+
+    new Rx.CompositeDisposable get, set
 
 sx.binders.css =
   init: (element, o) ->
