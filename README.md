@@ -8,8 +8,8 @@ Example
 
 **HTML**
 ```html
-    <span data-splash="text: name"></span>
     <input type="text" data-splash="value: name"/>
+    <div data-splash="text: name"></div>
 ```
 
 **JavaScript**
