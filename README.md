@@ -1,7 +1,7 @@
 RxJS-Splash
 ===========
 
-Push-based Knockout-style bindings for Reactive Extensions
+Push-based Knockout-style DOM bindings for Reactive Extensions
 
 Example
 -------
@@ -46,11 +46,11 @@ Binders
 
 **CSS**
 ```html
-    <button data-splash="css: { selected: isSelected }"></button>
+    <button class="btn" data-splash="css: { selected: isSelected }"></button>
 ```
 ```js
     sx.bind({
-      isSelected: new Rx.BehaviourSubject(true)
+      isSelected: new Rx.BehaviorSubject(true)
     });
 ```
 
@@ -60,7 +60,7 @@ Binders
 ```
 ```js
     sx.bind({
-      sayHi: function(e, vm) { 
+      sayHi: function(vm, e) { 
         e.preventDefault();
         var text = $(e.currentTarget).text();
         alert(text);
@@ -77,7 +77,7 @@ Binders
 ```
 ```js
     sx.bind({
-      text: new Rx.Observable.interval(250),
+      counter: new Rx.Observable.interval(1000),
       isSelected: new Rx.BehaviorSubject(),
       select: function(vm, e) {
         vm.isSelected.onNext(vm.isSelected.value);
@@ -88,11 +88,13 @@ Binders
 **It's Rx!**
 ```html
     <div data-splash="text: counter"></div>
-    <div data-splash="text: counter.sample(250)"></div>
+    <div data-splash="text: counter.take(250)"></div>
+    <div data-splash="text: counter.sample(500)"></div>
+    <div data-splash="text: counter.delay(1000)"></div>
 ```
 ```js
     sx.bind({
-      counter: Rx.Observable.interval(1)
+      counter: Rx.Observable.interval(10)
     });
 ```
 
@@ -100,7 +102,7 @@ Disposing
 ---------
 Splash makes un-binding as easy as calling dispose.
 ```html
-    <button data-splash=""></button>
+    <button data-splash="text: counter, click: dispose"></button>
 ```
 ```js
     var binding = sx.bind({
