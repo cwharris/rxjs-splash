@@ -22,7 +22,9 @@
     <div>Name: <span data-splash='text: name'></span></div>
     <div>Dob: <span data-splash='text: dob'></span></div>
     <div>Age: <span data-splash='text: age'></span></div>
-    <button class='btn' data-splash='css: { "btn-warning": isHighlighted }, text: age'>Click Me</button>
+    <button class='btn' data-splash='text: age.sample(1000), click: toggleHighlight, css: { "btn-warning": isHighlighted }'>
+      Click Me
+    </button>
     <div>
       <input type="text" data-splash='value: name'></input>
     </div>

@@ -15,10 +15,12 @@
         this.age = this.diff.select(function(x) {
           return x / 1000 / 60 / 60 / 24 / 365;
         });
-        this.isHighlighted = this.diff.sample(1000).select(function(x) {
-          return Math.floor(x / 7) % 2 === 0;
-        });
+        this.isHighlighted = new Rx.BehaviorSubject(false);
       }
+
+      Vm.prototype.toggleHighlight = function(vm, e) {
+        return this.isHighlighted.onNext(!this.isHighlighted.value);
+      };
 
       return Vm;
 

@@ -10,20 +10,27 @@ class Splash
 
   bind: (vm, dom) ->
 
+    disposable = new Rx.CompositeDisposable
+
     self = this
 
     dom = $(dom || 'body')
 
-    bindings = dom.find('[data-splash]').map ->
+    targets = dom.find('[data-splash]')
+
+    bindings = targets.map ->
       target = $ this
       target: target
       bindings: self.parseBindings vm, target.attr 'data-splash'
 
+    # targets.removeAttr 'data-splash'
+
     bindings.each ->
-      self.binders[key].init(this.target, {options: value}) for key, value of this.bindings
+      disposable.add self.binders[key].init(this.target, {options: value, vm: vm}) for key, value of this.bindings
+
+    disposable
 
   parseBindings: (vm, binding) ->
-    # this still needs to be implemented, obviously
     keys = []
     values = []
 
@@ -31,7 +38,7 @@ class Splash
       keys.push key
       values.push value
 
-    new Function(keys, 'return {' + binding + '};').apply(undefined, values)
+    new Function(keys, 'return {' + binding + '};').apply(null, values)
 
 window.sx = new Splash
 
@@ -40,13 +47,11 @@ Binders
 ###
 
 sx.binders.text =
-  init: (element, o) ->
-    target = $ element
+  init: (target, o) ->
     o.options.subscribe (x) -> target.text x
 
 sx.binders.value =
-  init: (element, o) ->
-    target = $ element
+  init: (target, o) ->
     focus = target.onAsObservable('focus')
     blur = target.onAsObservable('blur')
     source = o.options
@@ -57,8 +62,6 @@ sx.binders.value =
       .subscribe (x) ->
         target.val x
 
-    console.log typeof o.options
-
     get = target
       .onAsObservable('change')
       .subscribe (x) ->
@@ -67,13 +70,24 @@ sx.binders.value =
     new Rx.CompositeDisposable get, set
 
 sx.binders.css =
-  init: (element, o) ->
-    target = $ element
+  init: (target, o) ->
+    disposable = new Rx.CompositeDisposable
     for css, source of o.options
-      source.subscribe (x) ->
+      disposable.add source.subscribe (x) ->
         target.toggleClass css, x
 
+    disposable
 
+sx.binders.click =
+  init: (target, o) ->
+    target.onAsObservable('click').subscribe (e) ->
+      e.preventDefault()
+      o.options.call o.vm, o.vm, e
 
+# Rx.Subject.createMap = (source, fromSource, toSource) ->
 
+#   subscribe: (o) ->
+#     source.select(fromSource).subscribe o
 
+#   onNext: (x) ->
+#     source.onNext toSource x
