@@ -3,8 +3,10 @@ RxJS-Splash
 
 ko-style bindings for rx
 
-HTML
-----
+Example
+-------
+
+**HTML**
 ```html
 
     <div>Name: <span data-splash='text: name'></span></div>
@@ -13,8 +15,7 @@ HTML
     </div>
 ```
 
-JavaScript
--------------
+**JavaScript**
 ```coffee-script
 
     vm = { 
