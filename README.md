@@ -1,7 +1,7 @@
 RxJS-Splash
 ===========
 
-ko-style bindings for rx
+Knockout-style bindings for Reactive Extensions
 
 Example
 -------
