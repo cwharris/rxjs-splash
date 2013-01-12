@@ -50,6 +50,10 @@ sx.binders.text =
   init: (target, o) ->
     o.options.subscribe (x) -> target.text x
 
+sx.binders.html =
+  init: (target, o) ->
+    o.options.subscribe (x) -> target.html x
+
 sx.binders.value =
   init: (target, o) ->
     focus = target.onAsObservable('focus')

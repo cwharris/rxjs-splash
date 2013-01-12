@@ -2,31 +2,9 @@
 (function() {
 
   $(function() {
-    var Vm, vm;
-    Vm = (function() {
-
-      function Vm(name, dob) {
-        var _this = this;
-        this.name = new Rx.BehaviorSubject(name || 'no name');
-        this.dob = new Rx.BehaviorSubject(dob || new Date);
-        this.diff = Rx.Observable.interval(1).select(function() {
-          return new Date - _this.dob.value;
-        });
-        this.age = this.diff.select(function(x) {
-          return x / 1000 / 60 / 60 / 24 / 365;
-        });
-        this.isHighlighted = new Rx.BehaviorSubject(false);
-      }
-
-      Vm.prototype.toggleHighlight = function(vm, e) {
-        return this.isHighlighted.onNext(!this.isHighlighted.value);
-      };
-
-      return Vm;
-
-    })();
-    vm = new Vm('Christopher Harris', new Date('11/11/1989'));
-    return sx.bind(vm);
+    return sx.bind({
+      html: new Rx.BehaviorSubject('<i>HTML</i>')
+    });
   });
 
 }).call(this);
