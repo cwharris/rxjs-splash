@@ -33,16 +33,6 @@ Binders
       name: new Rx.BehaviorSubject('Christopher Harris')
     });
 ```
-**HTML**
-```html
-    <textarea data-bind="value: html"></textarea>
-    <div data-bind="html: html"></div>
-```
-```js
-    sx.bind({
-      html: new Rx.BehaviorSubject('<i>HMTL</i>')
-    });
-```
 
 **Value**
 ```html
@@ -51,6 +41,16 @@ Binders
 ```js
     sx.bind({
       name: new Rx.BehaviorSubject('Christopher Harris')
+    });
+```
+**HTML**
+```html
+    <textarea data-bind="value: html"></textarea>
+    <div data-bind="html: html"></div>
+```
+```js
+    sx.bind({
+      html: new Rx.BehaviorSubject('<i>HMTL</i>')
     });
 ```
 
