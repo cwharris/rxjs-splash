@@ -1,64 +1,83 @@
 ###
 Splash
 ###
-
 class Splash
 
   constructor: ->
-
     @binders = {}
 
-  bind: (vm, dom) ->
+  bind: (vm, dom, rootVm = vm) ->
+    dom = if dom then $(dom) else $(window.document.body)
+    @bindElement
+      vm: vm
+      dom: dom
+      rootVm: rootVm
+      vmChanged: true
 
-    disposable = new Rx.CompositeDisposable
+  bindElement: (o) ->
+    self = @
+    # console.log o
+    bindings = parseBindings o
 
-    self = this
+    @applyBindings o, bindings if bindings
 
-    dom = $(dom || 'body')
+    o.dom.children().each ->
+      self.bindElement
+        vm: o.vm
+        dom: $ @
+        vmChanged: false
 
-    targets = dom.find('[data-splash]')
+  applyBindings: (o, bindings) ->
+    @binders[binder].init(o, options) for binder, options of bindings
 
-    bindings = targets.map ->
-      target = $ this
-      target: target
-      bindings: self.parseBindings vm, target.attr 'data-splash'
 
-    # targets.removeAttr 'data-splash'
+  parseBindings = (o) ->
+    binding = o.dom.attr 'data-splash'
 
-    bindings.each ->
-      disposable.add self.binders[key].init(this.target, {options: value, vm: vm}) for key, value of this.bindings
+    return null if not binding
 
-    disposable
-
-  parseBindings: (vm, binding) ->
     keys = []
     values = []
 
-    for key, value of vm
+    for key, value of o.vm
       keys.push key
       values.push value
 
-    new Function(keys, 'return {' + binding + '};').apply(null, values)
+    new Function(keys, "return { #{binding} };").apply(null, values)
 
-window.sx = new Splash
+sx = window.sx = new Splash
 
-###
-Binders
-###
+sx.binders.text = 
+  init: (o, options) ->
+    options.subscribe (x) -> o.dom.text x
 
-sx.binders.text =
-  init: (target, o) ->
-    o.options.subscribe (x) -> target.text x
+sx.binders.html = 
+  init: (o, options) ->
+    options.subscribe (x) -> o.dom.html x
 
-sx.binders.html =
-  init: (target, o) ->
-    o.options.subscribe (x) -> target.html x
+sx.binders.click = 
+  init: (o, options) ->
+    o.dom.onAsObservable('click').subscribe (e) ->
+      e.preventDefault()
+      options.call undefined, o.vm, e
+
+sx.binders.css =
+  init: (o, options) ->
+    target = o.dom
+    disposable = new Rx.CompositeDisposable
+    for css, source of options
+      disposable.add source.subscribe (x) ->
+        console.log x
+        target.toggleClass css, x
+
+    disposable
 
 sx.binders.value =
-  init: (target, o) ->
+  init: (o, options) ->
+    target = o.dom
+    source = options
     focus = target.onAsObservable('focus')
     blur = target.onAsObservable('blur')
-    source = o.options
     set = source
       .takeUntil(focus)
       .concat(blur.take 1)
@@ -73,25 +92,19 @@ sx.binders.value =
 
     new Rx.CompositeDisposable get, set
 
-sx.binders.css =
-  init: (target, o) ->
-    disposable = new Rx.CompositeDisposable
-    for css, source of o.options
-      disposable.add source.subscribe (x) ->
-        target.toggleClass css, x
-
-    disposable
-
-sx.binders.click =
-  init: (target, o) ->
-    target.onAsObservable('click').subscribe (e) ->
-      e.preventDefault()
-      o.options.call o.vm, o.vm, e
-
-# Rx.Subject.createMap = (source, fromSource, toSource) ->
-
-#   subscribe: (o) ->
-#     source.select(fromSource).subscribe o
-
-#   onNext: (x) ->
-#     source.onNext toSource x
+sx.binders.foreach =
+  init: (o, options) ->
+    template = o.dom.html()
+    o.dom.empty()
+    options.delay(0).subscribe (lifetime) ->
+      dom = $(template).appendTo o.dom
+      vm = 
+        $parent: o.vm
+        $root: o.rootVm
+        $data: lifetime.value
+      sx.bind vm, dom, o.rootVm
+      lifetime.subscribe(
+        ->
+        -> dom.remove()
+        -> dom.remove()
+        )

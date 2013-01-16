@@ -1,4 +1,4 @@
-<!DOCTYPE HTML5>
+<!DOCTYPE HTML>
 <html>
 <head>
   <title>*Splash*</title>
@@ -18,22 +18,29 @@
   </style>
 </head>
 <body>
-  <div>
-    <textarea data-splash="value: html"></textarea>
-    <div data-splash="html: html"></div>
-  <div>
+
+  <div class="container">
+    <table class="table">
+      <thead>
+        <tr>
+          <th><button class="btn btn-primary" data-splash="click: add">+</button></th>
+          <th>Name</th>
+          <th>Name</th>
+        </tr>
+      </thead>
+      <tbody data-splash="foreach: items">
+        <tr data-splash="css: { info: $data.isSelected }, click: $parent.select.bind($parent, $data)">
+          <td><button class="btn btn-danger" data-splash="click: $parent.remove.bind($parent, $data)">-</button></td>
+          <td>
+            <input type="text" data-splash="value: $data.name"/>
+          </td>
+          <td data-splash="text: $data.name">
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+
 </body>
 </html>
-
-<!-- 
-
-  div Name:
-    span(data-splash='text: name')
-  div Dob:
-    span(data-splash='text: dob')
-  div Age:
-    span(data-splash='text: age')
-
-  button(data-splash='css: {"btn-warning": warning}')
-
--->
