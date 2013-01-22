@@ -1,7 +1,7 @@
 RxJS-Splash
 ===========
 
-Push-based Knockout-style DOM bindings for Reactive Extensions
+Push-based [Knockout](http://knockoutjs.com/)-style DOM bindings for Reactive Extensions
 
 Example
 -------
