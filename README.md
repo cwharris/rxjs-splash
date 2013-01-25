@@ -15,7 +15,7 @@ Example
 **JavaScript**
 ```coffeescript
 
-    vm = { 
+    var vm = { 
       name: new Rx.BehaviorSubject('Christopher Harris')
     };
 
