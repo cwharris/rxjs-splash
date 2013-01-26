@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>RxJS-Splash - Contact Manager</title>
+  <script src='../../js/jquery.min.js'></script>
+  <script src='../../js/rx.min.js'></script>
+  <script src='../../js/rx.binding.min.js'></script>
+  <script src='../../js/rx.joinpatterns.min.js'></script>
+  <script src='../../js/rx.experimental.min.js'></script>
+  <script src='../../js/rx.time.min.js'></script>
+  <script src='../../js/rx.jquery.min.js'></script>
+  <script src='../../js/rx.splash.js'></script>
+  <script src='./index.js'></script>
+  <link rel='stylesheet' href='../../css/bootstrap.css' />
+</head>
+<body>
+  <div class="container">
+    <table class="table">
+      <thead>
+        <tr>
+          <th><button class="btn btn-primary" data-splash="click: add">+</button></th>
+          <th>Name</th>
+          <th>Email Address</th>
+          <th>Formatted</th>
+        </tr>
+      </thead>
+      <tbody data-splash="foreach: items">
+        <tr data-splash="css: { info: $data.isSelected }, click: $parent.select.bind($parent, $data)">
+          <td>
+            <button class="btn btn-danger" data-splash="click: $parent.remove.bind($parent, $data)">
+              -
+            </button>
+          </td>
+          <td>
+            <input type="text" data-splash="value: $data.name"/>
+          </td>
+          <td>
+            <input type="text" data-splash="value: $data.email"/>
+          </td>
+          <td data-splash="text: $data.display">
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

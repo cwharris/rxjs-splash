@@ -1,172 +1,37 @@
-<!doctype html>
+<!DOCTYPE HTML>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Rxjs-splash by cwharris</title>
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="javascripts/main.js"></script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<head>
+  <title>*Splash*</title>
+  <script src='./js/jquery.min.js'></script>
+  <script src='./js/rx.min.js'></script>
+  <script src='./js/rx.binding.min.js'></script>
+  <script src='./js/rx.joinpatterns.min.js'></script>
+  <script src='./js/rx.time.min.js'></script>
+  <script src='./js/rx.jquery.min.js'></script>
+  <script src='./js/rx.splash.js'></script>
+  <script src='./index.js'></script>
+  <link rel='stylesheet' href='./css/bootstrap.css' />
+  <style>
+    .highlight {
+      background-color: red;
+    }
+  </style>
+</head>
+<body>
 
-  </head>
-  <body>
+  <div class="container">
 
-      <header>
-        <h1>Rxjs-splash</h1>
-        <p>Push-based MVVM DOM bindings for Reactive Extensions</p>
-      </header>
+    <h2>RxJS-Splash</h2>
+    <p class="lead">Push-based <a href="http://knockoutjs.com/">Knockout</a>-style DOM bindings for Reactive Extensions</p>
+    <h4>Examples</h4>
+    <p>These documents are a work in progress. <small>But please feel free to let me know if something is wrong.</small></p>
+    <ul>
+      <li>
+        <a href="pages/contact-manager/index.html">Contact Manager</a>
+      </li>
+    </ul>
 
-      <div id="banner">
-        <span id="logo"></span>
+  </div>
 
-        <a href="https://github.com/cwharris/rxjs-splash" class="button fork"><strong>View On GitHub</strong></a>
-        <div class="downloads">
-          <span>Downloads:</span>
-          <ul>
-            <li><a href="https://github.com/cwharris/rxjs-splash/zipball/master" class="button">ZIP</a></li>
-            <li><a href="https://github.com/cwharris/rxjs-splash/tarball/master" class="button">TAR</a></li>
-          </ul>
-        </div>
-      </div><!-- end banner -->
-
-    <div class="wrapper">
-      <nav>
-        <ul></ul>
-      </nav>
-      <section>
-        <h1>RxJS-Splash</h1>
-
-<p>Push-based Knockout-style DOM bindings for Reactive Extensions</p>
-
-<h2>Example</h2>
-
-<p><strong>HTML</strong></p>
-
-<div class="highlight"><pre>    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">data-splash=</span><span class="s">"value: name"</span><span class="nt">/&gt;</span>
-    <span class="nt">&lt;div</span> <span class="na">data-splash=</span><span class="s">"text: name"</span><span class="nt">&gt;&lt;/div&gt;</span>
-</pre></div>
-
-<p><strong>JavaScript</strong></p>
-
-<div class="highlight"><pre>
-    <span class="nv">vm = </span><span class="p">{</span> 
-      <span class="nv">name: </span><span class="k">new</span> <span class="nx">Rx</span><span class="p">.</span><span class="nx">BehaviorSubject</span><span class="p">(</span><span class="s">'Christopher Harris'</span><span class="p">)</span>
-    <span class="p">};</span>
-
-    <span class="nx">sx</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="nx">vm</span><span class="p">);</span>
-</pre></div>
-
-<h2>Binders</h2>
-
-<p><strong>Text</strong></p>
-
-<div class="highlight"><pre>    <span class="nt">&lt;span</span> <span class="na">data-splash=</span><span class="s">"text: name"</span><span class="nt">&gt;&lt;/span&gt;</span>
-</pre></div>
-
-<div class="highlight"><pre>    <span class="nx">sx</span><span class="p">.</span><span class="nx">bind</span><span class="p">({</span>
-      <span class="nx">name</span><span class="o">:</span> <span class="k">new</span> <span class="nx">Rx</span><span class="p">.</span><span class="nx">BehaviorSubject</span><span class="p">(</span><span class="s1">'Christopher Harris'</span><span class="p">)</span>
-    <span class="p">});</span>
-</pre></div>
-
-<p><strong>HTML</strong></p>
-
-<div class="highlight"><pre>    <span class="nt">&lt;textarea</span> <span class="na">data-bind=</span><span class="s">"value: html"</span><span class="nt">&gt;&lt;/textarea&gt;</span>
-    <span class="nt">&lt;div</span> <span class="na">data-bind=</span><span class="s">"html: html"</span><span class="nt">&gt;&lt;/div&gt;</span>
-</pre></div>
-
-<div class="highlight"><pre>    <span class="nx">sx</span><span class="p">.</span><span class="nx">bind</span><span class="p">({</span>
-      <span class="nx">html</span><span class="o">:</span> <span class="k">new</span> <span class="nx">Rx</span><span class="p">.</span><span class="nx">BehaviorSubject</span><span class="p">(</span><span class="s1">'&lt;i&gt;HMTL&lt;/i&gt;'</span><span class="p">)</span>
-    <span class="p">});</span>
-</pre></div>
-
-<p><strong>Value</strong></p>
-
-<div class="highlight"><pre>    <span class="nt">&lt;input</span> <span class="na">data-splash=</span><span class="s">"value: name"</span><span class="nt">/&gt;</span>
-</pre></div>
-
-<div class="highlight"><pre>    <span class="nx">sx</span><span class="p">.</span><span class="nx">bind</span><span class="p">({</span>
-      <span class="nx">name</span><span class="o">:</span> <span class="k">new</span> <span class="nx">Rx</span><span class="p">.</span><span class="nx">BehaviorSubject</span><span class="p">(</span><span class="s1">'Christopher Harris'</span><span class="p">)</span>
-    <span class="p">});</span>
-</pre></div>
-
-<p><strong>CSS</strong></p>
-
-<div class="highlight"><pre>    <span class="nt">&lt;button</span> <span class="na">class=</span><span class="s">"btn"</span> <span class="na">data-splash=</span><span class="s">"css: { selected: isSelected }"</span><span class="nt">&gt;&lt;/button&gt;</span>
-</pre></div>
-
-<div class="highlight"><pre>    <span class="nx">sx</span><span class="p">.</span><span class="nx">bind</span><span class="p">({</span>
-      <span class="nx">isSelected</span><span class="o">:</span> <span class="k">new</span> <span class="nx">Rx</span><span class="p">.</span><span class="nx">BehaviorSubject</span><span class="p">(</span><span class="kc">true</span><span class="p">)</span>
-    <span class="p">});</span>
-</pre></div>
-
-<p><strong>Click</strong></p>
-
-<div class="highlight"><pre>    <span class="nt">&lt;button</span> <span class="na">data-splash=</span><span class="s">"click: sayHi"</span><span class="nt">&gt;</span>Hello, World!<span class="nt">&lt;/button&gt;</span>
-</pre></div>
-
-<div class="highlight"><pre>    <span class="nx">sx</span><span class="p">.</span><span class="nx">bind</span><span class="p">({</span>
-      <span class="nx">sayHi</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">vm</span><span class="p">,</span> <span class="nx">e</span><span class="p">)</span> <span class="p">{</span> 
-        <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
-        <span class="kd">var</span> <span class="nx">text</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">currentTarget</span><span class="p">).</span><span class="nx">text</span><span class="p">();</span>
-        <span class="nx">alert</span><span class="p">(</span><span class="nx">text</span><span class="p">);</span>
-      <span class="p">}</span>
-    <span class="p">});</span>
-</pre></div>
-
-<p><strong>Multiple Binders</strong></p>
-
-<div class="highlight"><pre>    <span class="nt">&lt;button</span> <span class="na">data-splash=</span><span class="s">"text: counter,</span>
-<span class="s">                         click: select,</span>
-<span class="s">                         css: { selected: isSelected }"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;/button&gt;</span>
-</pre></div>
-
-<div class="highlight"><pre>    <span class="nx">sx</span><span class="p">.</span><span class="nx">bind</span><span class="p">({</span>
-      <span class="nx">counter</span><span class="o">:</span> <span class="k">new</span> <span class="nx">Rx</span><span class="p">.</span><span class="nx">Observable</span><span class="p">.</span><span class="nx">interval</span><span class="p">(</span><span class="mi">1000</span><span class="p">),</span>
-      <span class="nx">isSelected</span><span class="o">:</span> <span class="k">new</span> <span class="nx">Rx</span><span class="p">.</span><span class="nx">BehaviorSubject</span><span class="p">(),</span>
-      <span class="nx">select</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">vm</span><span class="p">,</span> <span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">vm</span><span class="p">.</span><span class="nx">isSelected</span><span class="p">.</span><span class="nx">onNext</span><span class="p">(</span><span class="nx">vm</span><span class="p">.</span><span class="nx">isSelected</span><span class="p">.</span><span class="nx">value</span><span class="p">);</span>
-      <span class="p">}</span>
-    <span class="p">});</span>
-</pre></div>
-
-<p><strong>It's Rx!</strong></p>
-
-<div class="highlight"><pre>    <span class="nt">&lt;div</span> <span class="na">data-splash=</span><span class="s">"text: counter"</span><span class="nt">&gt;&lt;/div&gt;</span>
-    <span class="nt">&lt;div</span> <span class="na">data-splash=</span><span class="s">"text: counter.take(250)"</span><span class="nt">&gt;&lt;/div&gt;</span>
-    <span class="nt">&lt;div</span> <span class="na">data-splash=</span><span class="s">"text: counter.sample(500)"</span><span class="nt">&gt;&lt;/div&gt;</span>
-    <span class="nt">&lt;div</span> <span class="na">data-splash=</span><span class="s">"text: counter.delay(1000)"</span><span class="nt">&gt;&lt;/div&gt;</span>
-</pre></div>
-
-<div class="highlight"><pre>    <span class="nx">sx</span><span class="p">.</span><span class="nx">bind</span><span class="p">({</span>
-      <span class="nx">counter</span><span class="o">:</span> <span class="nx">Rx</span><span class="p">.</span><span class="nx">Observable</span><span class="p">.</span><span class="nx">interval</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-    <span class="p">});</span>
-</pre></div>
-
-<h2>Disposing</h2>
-
-<p>Splash makes un-binding as easy as calling dispose.</p>
-
-<div class="highlight"><pre>    <span class="nt">&lt;button</span> <span class="na">data-splash=</span><span class="s">"text: counter, click: dispose"</span><span class="nt">&gt;&lt;/button&gt;</span>
-</pre></div>
-
-<div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">binding</span> <span class="o">=</span> <span class="nx">sx</span><span class="p">.</span><span class="nx">bind</span><span class="p">({</span>
-      <span class="nx">counter</span><span class="o">:</span> <span class="nx">Rx</span><span class="p">.</span><span class="nx">Observable</span><span class="p">.</span><span class="nx">interval</span><span class="p">(</span><span class="mi">250</span><span class="p">),</span>
-      <span class="nx">dispose</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="nx">binding</span><span class="p">.</span><span class="nx">dispose</span><span class="p">();</span> <span class="p">}</span>
-    <span class="p">});</span>
-</pre></div>
-      </section>
-      <footer>
-        <p>Project maintained by <a href="https://github.com/cwharris">cwharris</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></small></p>
-      </footer>
-    </div>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
-    
-  </body>
+</body>
 </html>
