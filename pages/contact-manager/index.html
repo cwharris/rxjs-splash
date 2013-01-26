@@ -1,6 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <title>RxJS-Splash - Contact Manager</title>
   <script src='../../js/jquery.min.js'></script>
   <script src='../../js/rx.min.js'></script>
@@ -15,10 +16,16 @@
 </head>
 <body>
   <div class="container">
-    <table class="table">
+    <h2>Contact Manager</h2>
+    <p class="lead">Contacts</p>
+    <table class="table table-bordered table-striped table-hover table-condensed">
       <thead>
         <tr>
-          <th><button class="btn btn-primary" data-splash="click: add">+</button></th>
+          <th style="width:50px">
+            <button class="btn btn-mini" data-splash="click: add">
+              <i class="icon-plus"></i>
+            </button>
+          </th>
           <th>Name</th>
           <th>Email Address</th>
           <th>Formatted</th>
@@ -27,12 +34,12 @@
       <tbody data-splash="foreach: items">
         <tr data-splash="css: { info: $data.isSelected }, click: $parent.select.bind($parent, $data)">
           <td>
-            <button class="btn btn-danger" data-splash="click: $parent.remove.bind($parent, $data)">
-              -
+            <button class="btn btn-mini btn-danger" data-splash="click: $parent.remove.bind($parent, $data)">
+              <i class="icon-minus"></i>
             </button>
           </td>
           <td>
-            <input type="text" data-splash="value: $data.name"/>
+            <input type="text" class="input-block" data-splash="value: $data.name"/>
           </td>
           <td>
             <input type="text" data-splash="value: $data.email"/>
@@ -42,6 +49,17 @@
         </tr>
       </tbody>
     </table>
+    <hr/>
+    <h4>Known Issues</h4>
+    <p>Observables created with <i>sx.computed</i> remain hot after their subscriptions have ended (see console).</p>
+    <hr/>
+    <footer>
+      <p>© Christopher Harris 2013</p>
+    </footer>
+    <!-- <h6>HTML</h6>
+    <pre></pre>
+    <h6>JavaScript</h6>
+    <pre></pre> -->
   </div>
 </body>
 </html>
