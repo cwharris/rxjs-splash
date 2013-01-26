@@ -1,0 +1,222 @@
+
+###
+--------------------------------------------------
+    
+    Configuration
+
+--------------------------------------------------
+###
+
+# Source directory
+source = './src'
+
+# Output directory & JS file
+output = './rx.splash.js'
+
+# File (in `source` dir) to build import tree from
+main   = 'rx.splash.coffee'
+
+# Options passed to CoffeeScript the compiler (e.g. --bare)
+opts   = '--lint'
+
+###
+--------------------------------------------------
+    
+    Dependancies
+
+--------------------------------------------------
+###
+
+fs = require 'fs'
+util = require 'util'
+{exec} = require 'child_process'
+try growl = require 'growl'
+
+###
+--------------------------------------------------
+    
+    Constants
+
+--------------------------------------------------
+###
+
+REGEX_FILENAME = /\.\w+$/i
+REGEX_IMPORT = /#\s?import\s+?([\w\.\-\/\*]+)/g
+
+###
+--------------------------------------------------
+    
+    Node construct for building topological
+    graphs.
+
+--------------------------------------------------
+###
+
+class Node
+    constructor: ( @name, @content, @edges =[] ) ->
+    add: ( edges... ) -> @edges = @edges.concat edges
+
+###
+--------------------------------------------------
+    
+    Recursively traverses a directory and
+    returns a list of all .coffee files.
+
+--------------------------------------------------
+###
+
+traverse = ( path, result = [] ) ->
+
+    files = fs.readdirSync path
+    map = {}
+
+    for file in files
+
+        file = "#{path}/#{file}"
+        stat = fs.statSync file
+
+        if stat.isFile() and /\.coffee$/.test file then result.push file
+        else if stat.isDirectory() then traverse file, result
+
+    result
+
+###
+--------------------------------------------------
+    
+    Loads and indexes a list of files
+
+--------------------------------------------------
+###
+
+catalog = ( list, done, result = [] ) ->
+
+    process = ( file ) -> ( error, content ) ->
+
+        if not error then result.push new Node file, content else throw error
+        done result if result.length is list.length
+
+    fs.readFile file, 'utf8', process file for file in list
+
+###
+--------------------------------------------------
+    
+    Recursively resolves dependancies
+
+--------------------------------------------------
+###
+
+resolve = ( node, result = [] ) ->
+    
+    resolve edge, result for edge in node.edges when edge not in result
+    result.push node
+    result
+
+###
+--------------------------------------------------
+    
+    Watch main source and build changes
+
+--------------------------------------------------
+###
+
+task 'watch', 'Watch sources and build changes', ( options ) ->
+
+    invoke 'build'
+    util.log "Watching for changes in #{source}"
+    fs.watchFile [ source, main ].join( '/' ), ( now, old ) => invoke 'build' if +now.mtime isnt +old.mtime
+
+    # Build a list of all files
+    files = traverse source
+
+    for file in files then do ( file ) ->
+        
+        fs.watchFile file, ( now, old ) ->
+            util.log "Saw change in #{file}"
+            invoke 'build' if +now.mtime isnt +old.mtime
+
+###
+--------------------------------------------------
+    
+    Builds main source by resolving and
+    concatenating depandancies before passing
+    the output to the CoffeeScript compiler
+
+--------------------------------------------------
+###
+
+task 'sbuild', 'Build: Sublime Text', -> invoke 'build'
+task 'build', 'Build main source and dependancies', ( options ) ->
+    
+    files = traverse source
+
+    # Process them into Nodes
+
+    catalog files, ( nodes ) ->
+
+        # Map all source paths to Nodes
+
+        map = {}
+        add = ( node, name ) -> ( map[ name ] ?= [] ).push node
+
+        for node in nodes
+
+            path = node.name.replace( REGEX_FILENAME, '' ).split '/'
+            last = path.pop()
+
+            add node, path.slice( 0, index ).concat( '*' ).join '/' for index in [ 0..path.length ]
+            add node, path.concat( last ).join '/'
+            add node, node.name
+        
+        # Compute edges
+
+        for node in nodes
+
+            while match = REGEX_IMPORT.exec node.content
+
+                if target = match[1]
+
+                    key = [ source, target.replace /\.(?!coffee)/g, '/' ].join '/'
+
+                    if not map[ key ] then throw "No file matching import: #{key}"
+                    else node.add link for link in map[ key ]
+
+        # Build dependency graph
+
+        path = [ source, main ].join '/'
+        link = map[ path ]?[0]
+
+        # Resolve dependancies
+
+        if link then chain = resolve link
+        else throw "Root node not found: #{path}"
+        
+        # Concatenate contents into one file
+        content = ( node.content for node in chain ).join '\n\n'
+
+        merged = output.replace( REGEX_FILENAME, '' ) + '.coffee'
+
+        fs.writeFile merged, content, 'utf8', ( error ) ->
+
+            throw error if error
+
+            exec "coffee -c #{opts} #{merged}", ( error ) ->
+
+                if error then throw error else
+
+                    if fs.existsSync merged then fs.unlink merged, ( error ) -> throw error if error
+
+                grrrr "Project compiled into: #{output}"
+
+###
+--------------------------------------------------
+    
+    Growl proxy
+
+--------------------------------------------------
+###
+
+grrrr = ( message = '' ) ->
+
+    options = title: 'CoffeeScript'
+    growl?.notify message, options
+    util.log message

@@ -1,0 +1,4 @@
+*.js
+*.sublime-project
+*.sublime-workspace
+!rx.splash.js
