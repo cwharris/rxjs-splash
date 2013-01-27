@@ -207,6 +207,13 @@ task 'build', 'Build main source and dependancies', ( options ) ->
 
                 grrrr "Project compiled into: #{output}"
 
+                minified = output.replace( REGEX_FILENAME, '' ) + '-min.js'
+                merged = output.replace( REGEX_FILENAME, '' ) + '.js'
+
+                console.log minified, merged
+
+                exec "uglifyjs -o #{minified} #{merged}"
+
 ###
 --------------------------------------------------
     
