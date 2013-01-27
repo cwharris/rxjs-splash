@@ -11,7 +11,7 @@
 source = './src'
 
 # Output directory & JS file
-output = './rx.splash.js'
+output = './bin/rx.splash.js'
 
 # File (in `source` dir) to build import tree from
 main   = 'rx.splash.coffee'

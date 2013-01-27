@@ -1,8 +1,8 @@
 .DS_Store
 
 *.js
-!rx.splash.js
-!rx.splash-min.js
+!bin/rx.splash.js
+!bin/rx.splash-min.js
 
 node_modules
 
