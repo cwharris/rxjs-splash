@@ -1,0 +1,29 @@
+{
+  "name": "rxjs-splash",
+  "version":"1.0.0",
+  "author":"Christopher Harris <xixonia@gmail.com>",
+  "description": "Push-based MVVM DOM bindings for Reactive Extensions",
+  "contributors": [
+    {
+      "name":"Christopher Harris",
+      "email":"xixonia@gmail.com"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cwharris/rxjs-splash.git"
+  },
+  "keywords": [
+    "html",
+    "dom",
+    "binding",
+    "reactive",
+    "extensions",
+    "rx",
+    "rxjs"
+  ],
+  "devDependencies": {
+    "coffee-script":">=1.4.0"
+  },
+  "license": "MIT"
+}

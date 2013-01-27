@@ -1,4 +1,6 @@
+.DS_Store
 *.js
 *.sublime-project
 *.sublime-workspace
 !rx.splash.js
+!rx.splash-min.js
