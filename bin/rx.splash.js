@@ -23,11 +23,14 @@
     return callback(obsOrValue);
   };
 
-  sx.utils.unwrap = function(valueOrBehavior) {
-    if (valueOrBehavior.value && valueOrBehavior.subscribe) {
-      return valueOrBehavior.value;
-    }
-    return valueOrBehavior;
+  sx.utils.combineLatest = function() {
+    var args, source;
+    args = Array.prototype.slice.call(arguments);
+    args.push(function() {
+      return arguments;
+    });
+    source = args.shift();
+    return Rx.Observable.prototype.combineLatest.apply(source, args);
   };
 
   sx.utils.wrap = function(valueOrBehavior) {
@@ -35,6 +38,13 @@
       return valueOrBehavior;
     }
     return new Rx.BehaviorSubject(valueOrBehavior);
+  };
+
+  sx.utils.unwrap = function(valueOrBehavior) {
+    if (valueOrBehavior.value && valueOrBehavior.subscribe) {
+      return valueOrBehavior.value;
+    }
+    return valueOrBehavior;
   };
 
   sx.bind = function(vm, target) {
@@ -45,6 +55,32 @@
       vmParent: void 0
     });
   };
+
+  sx.computed = function(options) {
+    var key, keys, source, value, values, _ref;
+    keys = [];
+    values = [];
+    _ref = options.params;
+    for (key in _ref) {
+      value = _ref[key];
+      keys.push(key);
+      values.push(sx.utils.wrap(value));
+    }
+    source = sx.utils.combineLatest(values).select(function(values) {
+      var i, params, _i, _len;
+      params = {};
+      for (i = _i = 0, _len = keys.length; _i < _len; i = ++_i) {
+        key = keys[i];
+        params[key] = values[i];
+      }
+      return params;
+    });
+    return Rx.Observable.create(function(o) {
+      return source.select(options.read).subscribe(o);
+    });
+  };
+
+  sx.utils.combineLatest(values).select(function(values) {});
 
   sx.internal.bind = function(target, context) {
     var binder, bindings, disposable, options;
@@ -205,12 +241,6 @@
     });
   };
 
-  sx.binders.html = function(target, context, obsOrValue) {
-    return sx.utils.bind(obsOrValue, function(x) {
-      target.html(x);
-    });
-  };
-
   sx.binders.foreach = function(target, context, obsArray) {
     var disposable, template;
     template = target.html().trim();
@@ -242,6 +272,12 @@
       }));
     });
     return disposable;
+  };
+
+  sx.binders.html = function(target, context, obsOrValue) {
+    return sx.utils.bind(obsOrValue, function(x) {
+      target.html(x);
+    });
   };
 
   sx.binders.text = function(target, context, obsOrValue) {
