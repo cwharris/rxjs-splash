@@ -1,17 +1,33 @@
 # import core.globals
 
 sx.binders.foreach = (target, context, obsArray) ->
-  template = target.html().trim() # this needs to be replaced with an actual templating engine
+
+  template = target.html().trim()
   target.empty()
-  obsArray.delay(0).subscribe (lifetime) ->
-    child = $(template).appendTo target
-    binding = sx.internal.bind child, {
-      vm: lifetime.value
-      vmRoot: context.vmRoot
-      vmParent: context.vm
-    }
-    dispose = ->
-      child.remove()
-      binding.dispose()
-    lifetime.subscribe noop, dispose, dispose
+
+  disposable = new Rx.CompositeDisposable dispose: -> target.empty().append template
+
+  setTimeout ->
+    disposable.add obsArray.subscribe (lifetime) ->
+      child = $(template).appendTo target
+      disposable.add binding = sx.internal.bind child, {
+        vm: lifetime.value
+        vmRoot: context.vmRoot
+        vmParent: context.vm
+      }
+
+      dispose = ->
+        child.remove()
+        disposable.remove binding
+        disposable.remove sub
+        disposable.remove disposer
+        return
+
+      disposable.add disposer = dispose: dispose
+      disposable.add sub = lifetime.subscribe noop, dispose, dispose
+      return
+      
     return
+
+
+  disposable

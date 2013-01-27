@@ -47,15 +47,17 @@
   };
 
   sx.internal.bind = function(target, context) {
-    var binder, bindings, options;
+    var binder, bindings, disposable, options;
     bindings = sx.internal.parseBindings(target, context);
+    disposable = new Rx.CompositeDisposable;
     for (binder in bindings) {
       options = bindings[binder];
-      sx.binders[binder](target, context, options);
+      disposable.add(sx.binders[binder](target, context, options));
     }
-    return target.children().each(function() {
-      return sx.internal.bind($(this), context);
+    target.children().each(function() {
+      return disposable.add(sx.internal.bind($(this), context));
     });
+    return disposable;
   };
 
   sx.internal.parseBindings = function(target, context) {
@@ -188,6 +190,7 @@
     if (typeof options === 'function') {
       return obs.subscribe(function(e) {
         options({
+          target: target,
           context: context,
           e: e
         });
@@ -195,29 +198,10 @@
     }
     return obs.subscribe(function(e) {
       options.onNext({
+        target: target,
         context: context,
         e: e
       });
-    });
-  };
-
-  sx.binders.foreach = function(target, context, obsArray) {
-    var template;
-    template = target.html().trim();
-    target.empty();
-    return obsArray.delay(0).subscribe(function(lifetime) {
-      var binding, child, dispose;
-      child = $(template).appendTo(target);
-      binding = sx.internal.bind(child, {
-        vm: lifetime.value,
-        vmRoot: context.vmRoot,
-        vmParent: context.vm
-      });
-      dispose = function() {
-        child.remove();
-        return binding.dispose();
-      };
-      lifetime.subscribe(noop, dispose, dispose);
     });
   };
 
@@ -225,6 +209,39 @@
     return sx.utils.bind(obsOrValue, function(x) {
       target.html(x);
     });
+  };
+
+  sx.binders.foreach = function(target, context, obsArray) {
+    var disposable, template;
+    template = target.html().trim();
+    target.empty();
+    disposable = new Rx.CompositeDisposable({
+      dispose: function() {
+        return target.empty().append(template);
+      }
+    });
+    setTimeout(function() {
+      disposable.add(obsArray.subscribe(function(lifetime) {
+        var binding, child, dispose, disposer, sub;
+        child = $(template).appendTo(target);
+        disposable.add(binding = sx.internal.bind(child, {
+          vm: lifetime.value,
+          vmRoot: context.vmRoot,
+          vmParent: context.vm
+        }));
+        dispose = function() {
+          child.remove();
+          disposable.remove(binding);
+          disposable.remove(sub);
+          disposable.remove(disposer);
+        };
+        disposable.add(disposer = {
+          dispose: dispose
+        });
+        disposable.add(sub = lifetime.subscribe(noop, dispose, dispose));
+      }));
+    });
+    return disposable;
   };
 
   sx.binders.text = function(target, context, obsOrValue) {

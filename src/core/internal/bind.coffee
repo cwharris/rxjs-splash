@@ -3,8 +3,12 @@
 sx.internal.bind = (target, context) ->
   bindings = sx.internal.parseBindings target, context
 
+  disposable = new Rx.CompositeDisposable
+
   for binder, options of bindings
-    sx.binders[binder] target, context, options
+    disposable.add sx.binders[binder] target, context, options
 
   target.children().each ->
-    sx.internal.bind $(@), context
+    disposable.add sx.internal.bind $(@), context
+
+  disposable

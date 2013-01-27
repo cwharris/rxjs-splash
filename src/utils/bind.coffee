@@ -1,4 +1,5 @@
 #import core.globals
+
 sx.utils.bind = (obsOrValue, callback) ->
 
   if obsOrValue.subscribe
