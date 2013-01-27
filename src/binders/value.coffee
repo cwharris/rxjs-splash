@@ -2,6 +2,12 @@
 
 sx.binders.value = (target, context, obsOrValue) ->
 
+  if obsOrValue.onNext
+    observer = obsOrValue
+    get = target.onAsObservable('change').subscribe (x) ->
+      observer.onNext target.val()
+      return
+
   if obsOrValue.subscribe
     focus = target.onAsObservable 'focus'
     blur = target.onAsObservable 'blur'
@@ -14,9 +20,6 @@ sx.binders.value = (target, context, obsOrValue) ->
     target.val x
     return
 
-  if obsOrValue.onNext
-    get = target.onAsObservable('change').subscribe (x) ->
-      obsOrValue.onNext target.val()
-      return
+  # console.log obsOrValue.value
 
   new Rx.CompositeDisposable get, set

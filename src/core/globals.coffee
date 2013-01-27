@@ -3,5 +3,5 @@ sx = window.sx =
   internal: {}
   binders: {}
 
-noDispose = dispose: ->
 noop = ->
+noDispose = dispose: noop

@@ -1,7 +1,7 @@
 # import core.globals
 
-sx.internal.parseBindings = (context) ->
-  binding = context.target.attr 'data-splash'
+sx.internal.parseBindings = (target, context) ->
+  binding = target.attr 'data-splash'
 
   return null if not binding
 
