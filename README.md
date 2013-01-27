@@ -120,3 +120,7 @@ Splash makes un-binding as easy as calling dispose.
       dispose: function() { binding.dispose(); }
     });
 ```
+
+News
+----
+I'll tweet about significant changes made to splash: @cwharris
