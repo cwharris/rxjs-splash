@@ -123,4 +123,4 @@ Splash makes un-binding as easy as calling dispose.
 
 News
 ----
-I'll tweet about significant changes made to splash: @cwharris
+I'll tweet about significant changes made to splash: [@cwharris](http://www.twitter.com/cwharris)
