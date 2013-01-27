@@ -1,4 +1,4 @@
-#import core.globals
+# import core.globals
 
-sx.binders.click = (context, options) ->
-  sx.binders.event context, options, 'click'
+sx.binders.click = (target, context, options) ->
+  sx.binders.event target, context, options, 'click'

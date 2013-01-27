@@ -1,16 +1,18 @@
-#import core.globals
+# import core.globals
 
-sx.binders.event = (context, options, type = options.type) ->
+sx.binders.event = (target, context, options, type = options.type) ->
 
-  obs = $(context.target).onAsObservable type
+  obs = $(target).onAsObservable type
 
   if typeof options is 'function'
     return obs.subscribe (e) ->
       options
         context: context
         e: e
+      return
 
   obs.subscribe (e) ->
     options.onNext
       context: context
       e: e
+    return
