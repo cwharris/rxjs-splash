@@ -212,7 +212,7 @@ task 'build', 'Build main source and dependancies', ( options ) ->
 
                 console.log minified, merged
 
-                exec "uglifyjs -o #{minified} #{merged}"
+                exec "uglifyjs -m -o #{minified} #{merged}"
 
 ###
 --------------------------------------------------
