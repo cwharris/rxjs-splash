@@ -33,18 +33,18 @@
     return Rx.Observable.prototype.combineLatest.apply(source, args);
   };
 
-  sx.utils.wrap = function(valueOrBehavior) {
-    if (valueOrBehavior.value && valueOrBehavior.subscribe) {
-      return valueOrBehavior;
-    }
-    return new Rx.BehaviorSubject(valueOrBehavior);
-  };
-
   sx.utils.unwrap = function(valueOrBehavior) {
     if (valueOrBehavior.value && valueOrBehavior.subscribe) {
       return valueOrBehavior.value;
     }
     return valueOrBehavior;
+  };
+
+  sx.utils.wrap = function(valueOrBehavior) {
+    if (valueOrBehavior.value && valueOrBehavior.subscribe) {
+      return valueOrBehavior;
+    }
+    return new Rx.BehaviorSubject(valueOrBehavior);
   };
 
   sx.bind = function(vm, target) {
@@ -81,20 +81,6 @@
   };
 
   sx.utils.combineLatest(values).select(function(values) {});
-
-  sx.internal.bind = function(target, context) {
-    var binder, bindings, disposable, options;
-    bindings = sx.internal.parseBindings(target, context);
-    disposable = new Rx.CompositeDisposable;
-    for (binder in bindings) {
-      options = bindings[binder];
-      disposable.add(sx.binders[binder](target, context, options));
-    }
-    target.children().each(function() {
-      return disposable.add(sx.internal.bind($(this), context));
-    });
-    return disposable;
-  };
 
   sx.internal.parseBindings = function(target, context) {
     var binding, key, keys, value, values, _ref;
@@ -201,6 +187,20 @@
 
   })(Rx.Subject);
 
+  sx.internal.bind = function(target, context) {
+    var binder, bindings, disposable, options;
+    bindings = sx.internal.parseBindings(target, context);
+    disposable = new Rx.CompositeDisposable;
+    for (binder in bindings) {
+      options = bindings[binder];
+      disposable.add(sx.binders[binder](target, context, options));
+    }
+    target.children().each(function() {
+      return disposable.add(sx.internal.bind($(this), context));
+    });
+    return disposable;
+  };
+
   sx.binders.click = function(target, context, options) {
     return sx.binders.event(target, context, options, 'click');
   };
@@ -241,6 +241,31 @@
     });
   };
 
+  sx.binders.html = function(target, context, obsOrValue) {
+    return sx.utils.bind(obsOrValue, function(x) {
+      target.html(x);
+    });
+  };
+
+  sx.binders.value = function(target, context, obsOrValue) {
+    var blur, focus, get, observer, set;
+    if (obsOrValue.onNext) {
+      observer = obsOrValue;
+      get = target.onAsObservable('change').subscribe(function(x) {
+        observer.onNext(target.val());
+      });
+    }
+    if (obsOrValue.subscribe) {
+      focus = target.onAsObservable('focus');
+      blur = target.onAsObservable('blur');
+      obsOrValue = obsOrValue.takeUntil(blur).concat(blur.take(1)).repeat();
+    }
+    set = sx.utils.bind(obsOrValue, function(x) {
+      target.val(x);
+    });
+    return new Rx.CompositeDisposable(get, set);
+  };
+
   sx.binders.foreach = function(target, context, obsArray) {
     var disposable, template;
     template = target.html().trim();
@@ -274,35 +299,10 @@
     return disposable;
   };
 
-  sx.binders.html = function(target, context, obsOrValue) {
-    return sx.utils.bind(obsOrValue, function(x) {
-      target.html(x);
-    });
-  };
-
   sx.binders.text = function(target, context, obsOrValue) {
     return sx.utils.bind(obsOrValue, function(x) {
       target.text(x);
     });
-  };
-
-  sx.binders.value = function(target, context, obsOrValue) {
-    var blur, focus, get, observer, set;
-    if (obsOrValue.onNext) {
-      observer = obsOrValue;
-      get = target.onAsObservable('change').subscribe(function(x) {
-        observer.onNext(target.val());
-      });
-    }
-    if (obsOrValue.subscribe) {
-      focus = target.onAsObservable('focus');
-      blur = target.onAsObservable('blur');
-      obsOrValue = obsOrValue.takeUntil(blur).concat(blur.take(1)).repeat();
-    }
-    set = sx.utils.bind(obsOrValue, function(x) {
-      target.val(x);
-    });
-    return new Rx.CompositeDisposable(get, set);
   };
 
 }).call(this);
