@@ -13,5 +13,3 @@ sx.computed = (options) ->
     params
 
   Rx.Observable.create (o) -> source.select(options.read).subscribe o
-
-sx.utils.combineLatest(values).select (values) ->
