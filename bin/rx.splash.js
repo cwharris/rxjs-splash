@@ -39,6 +39,21 @@
     return options;
   };
 
+  sx.utils.toJS = function(obj) {
+    return JSON.stringify(obj, function(s, field) {
+      if (field instanceof sx.ObservableArray) {
+        return field.values;
+      }
+      if (field instanceof Rx.Observable) {
+        return field.value;
+      }
+      if (field instanceof Rx.Observer) {
+        return void 0;
+      }
+      return field;
+    });
+  };
+
   sx.utils.unwrap = function(valueOrBehavior) {
     if (valueOrBehavior.value && valueOrBehavior.subscribe) {
       return valueOrBehavior.value;
@@ -217,6 +232,22 @@
     return disposable;
   };
 
+  sx.binders.checked = function(target, context, obsOrValue) {
+    var get, observer, set;
+    if (obsOrValue.onNext) {
+      observer = obsOrValue;
+      get = target.onAsObservable('change').select(function() {
+        return target.prop('checked');
+      }).delay(250).subscribe(function(x) {
+        observer.onNext(x);
+      });
+    }
+    set = sx.utils.bind(obsOrValue, function(x) {
+      target.prop('checked', x);
+    });
+    return new Rx.CompositeDisposable(get, set);
+  };
+
   sx.binders.click = function(target, context, options) {
     return sx.binders.event(target, context, options, 'click');
   };
@@ -231,6 +262,30 @@
       }));
     }
     return disposable;
+  };
+
+  sx.binders.event = function(target, context, options, type) {
+    var obs;
+    if (type == null) {
+      type = options.type;
+    }
+    obs = $(target).onAsObservable(type);
+    if (typeof options === 'function') {
+      return obs.subscribe(function(e) {
+        options({
+          target: target,
+          context: context,
+          e: e
+        });
+      });
+    }
+    return obs.subscribe(function(e) {
+      options.onNext({
+        target: target,
+        context: context,
+        e: e
+      });
+    });
   };
 
   sx.binders.foreach = function(target, context, obsArray) {
@@ -264,30 +319,6 @@
       }));
     });
     return disposable;
-  };
-
-  sx.binders.event = function(target, context, options, type) {
-    var obs;
-    if (type == null) {
-      type = options.type;
-    }
-    obs = $(target).onAsObservable(type);
-    if (typeof options === 'function') {
-      return obs.subscribe(function(e) {
-        options({
-          target: target,
-          context: context,
-          e: e
-        });
-      });
-    }
-    return obs.subscribe(function(e) {
-      options.onNext({
-        target: target,
-        context: context,
-        e: e
-      });
-    });
   };
 
   sx.binders.html = function(target, context, obsOrValue) {
@@ -330,9 +361,9 @@
       options.on = options.on.slice(5);
       options.delay = true;
     }
-    if (options.source.onNext) {
+    if (typeof options.source.onNext === 'function') {
       observer = options.source;
-      getObs = target.onAsObservable('change ' + options.on);
+      getObs = target.onAsObservable(options.on || 'change');
       if (options.delay) {
         getObs = getObs.delay(0);
       }
@@ -344,7 +375,7 @@
         observer.onNext(x);
       });
     }
-    if (options.source.subscribe) {
+    if (options.source instanceof Rx.Observable) {
       focus = target.onAsObservable('focus');
       blur = target.onAsObservable('blur');
       options.source = options.source.takeUntil(focus).concat(blur.take(1)).repeat();

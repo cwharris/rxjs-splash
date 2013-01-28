@@ -37,9 +37,9 @@ sx.binders.value = (target, context, options) ->
     options.on = options.on.slice(5)
     options.delay = true
 
-  if options.source.onNext
+  if typeof options.source.onNext is 'function'
     observer = options.source
-    getObs = target.onAsObservable('change ' + options.on)
+    getObs = target.onAsObservable(options.on or 'change')
     getObs = getObs.delay(0) if options.delay
     get = getObs
       .select(-> target.val())
@@ -50,7 +50,7 @@ sx.binders.value = (target, context, options) ->
         observer.onNext x
         return
 
-  if options.source.subscribe
+  if options.source instanceof Rx.Observable
     focus = target.onAsObservable 'focus'
     blur = target.onAsObservable 'blur'
     options.source = options.source
