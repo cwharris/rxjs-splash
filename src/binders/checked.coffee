@@ -6,7 +6,6 @@ sx.binders.checked = (target, context, obsOrValue) ->
     observer = obsOrValue
     get = target.onAsObservable('change')
       .select(->target.prop 'checked')
-      .delay(250)
       .subscribe (x) ->
         observer.onNext x
         return

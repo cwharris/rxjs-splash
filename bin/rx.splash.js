@@ -238,7 +238,7 @@
       observer = obsOrValue;
       get = target.onAsObservable('change').select(function() {
         return target.prop('checked');
-      }).delay(250).subscribe(function(x) {
+      }).subscribe(function(x) {
         observer.onNext(x);
       });
     }
