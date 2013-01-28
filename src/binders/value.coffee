@@ -1,34 +1,3 @@
-# import core.globals
-
-sx.binders.value = (target, context, obsOrValue) ->
-
-  if obsOrValue.onNext
-    observer = obsOrValue
-    get = target.onAsObservable('change')
-      .select(->target.val())
-      # .distinctUntilChanged()
-      .subscribe (x) ->
-        observer.onNext x
-        return
-
-  if obsOrValue.subscribe
-    focus = target.onAsObservable 'focus'
-    blur = target.onAsObservable 'blur'
-    obsOrValue = obsOrValue
-      .takeUntil(focus)
-      .concat(blur.take 1)
-      .repeat()
-
-  set = sx.utils.bind obsOrValue, (x) ->
-    target.val x
-    return
-
-  # console.log obsOrValue.value
-
-  new Rx.CompositeDisposable get, set
-
-# import core.globals
-
 sx.binders.value = (target, context, options) ->
 
   options = sx.utils.parseBindingOptions options
@@ -43,9 +12,6 @@ sx.binders.value = (target, context, options) ->
     getObs = getObs.delay(0) if options.delay
     get = getObs
       .select(-> target.val())
-      # .where((x) -> x isnt options.source.value)
-      # .distinctUntilChanged()
-      .doAction((x) -> console.log x)
       .subscribe (x) ->
         observer.onNext x
         return

@@ -333,27 +333,6 @@
     });
   };
 
-  sx.binders.value = function(target, context, obsOrValue) {
-    var blur, focus, get, observer, set;
-    if (obsOrValue.onNext) {
-      observer = obsOrValue;
-      get = target.onAsObservable('change').select(function() {
-        return target.val();
-      }).subscribe(function(x) {
-        observer.onNext(x);
-      });
-    }
-    if (obsOrValue.subscribe) {
-      focus = target.onAsObservable('focus');
-      blur = target.onAsObservable('blur');
-      obsOrValue = obsOrValue.takeUntil(focus).concat(blur.take(1)).repeat();
-    }
-    set = sx.utils.bind(obsOrValue, function(x) {
-      target.val(x);
-    });
-    return new Rx.CompositeDisposable(get, set);
-  };
-
   sx.binders.value = function(target, context, options) {
     var blur, focus, get, getObs, observer, set;
     options = sx.utils.parseBindingOptions(options);
@@ -369,8 +348,6 @@
       }
       get = getObs.select(function() {
         return target.val();
-      }).doAction(function(x) {
-        return console.log(x);
       }).subscribe(function(x) {
         observer.onNext(x);
       });
