@@ -5,7 +5,9 @@ sx.binders.checked = (target, context, obsOrValue) ->
   if obsOrValue.onNext
     observer = obsOrValue
     get = target.onAsObservable('change')
-      .select(->target.prop 'checked')
+      # .select((e) -> $(e.currentTarget))
+      # .doAction((target) -> console.log target.attr 'data-splash')
+      .select(-> target.prop 'checked')
       .subscribe (x) ->
         observer.onNext x
         return

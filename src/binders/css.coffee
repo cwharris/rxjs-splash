@@ -2,9 +2,11 @@
 
 sx.binders.css = (target, context, options) ->
   disposable = new Rx.CompositeDisposable
-  for css, obsOrValue in options
-    disposable.add sx.utils.bind obsOrValue, (x) ->
-      target.css css, x
-      return
+  for key, obsOrValue of options
+    do ->
+      css = key
+      disposable.add sx.utils.bind obsOrValue, (x) ->
+        target.toggleClass css, x
+        return
       
   disposable

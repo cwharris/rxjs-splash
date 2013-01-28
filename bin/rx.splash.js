@@ -20,7 +20,8 @@
     if (obsOrValue.subscribe) {
       return obsOrValue.subscribe(callback);
     }
-    return callback(obsOrValue);
+    callback(obsOrValue);
+    return noDispose;
   };
 
   sx.utils.parseBindingOptions = function(param, options) {
@@ -221,13 +222,18 @@
   })(Rx.Subject);
 
   sx.binders.attr = function(target, context, options) {
-    var attr, disposable, obsOrValue, _i, _len;
+    var disposable, key, obsOrValue, _fn, _i, _len;
     disposable = new Rx.CompositeDisposable;
-    for (obsOrValue = _i = 0, _len = options.length; _i < _len; obsOrValue = ++_i) {
-      attr = options[obsOrValue];
-      disposable.add(sx.utils.bind(obsOrValue, function(x) {
+    _fn = function() {
+      var attr;
+      attr = key;
+      return disposable.add(sx.utils.bind(obsOrValue, function(x) {
         target.attr(attr, x);
       }));
+    };
+    for (obsOrValue = _i = 0, _len = options.length; _i < _len; obsOrValue = ++_i) {
+      key = options[obsOrValue];
+      _fn();
     }
     return disposable;
   };
@@ -249,17 +255,22 @@
   };
 
   sx.binders.click = function(target, context, options) {
-    return sx.binders.event(target, context, options, 'click');
+    return sx.binders.event(target, context, options, 'click', true);
   };
 
   sx.binders.css = function(target, context, options) {
-    var css, disposable, obsOrValue, _i, _len;
+    var disposable, key, obsOrValue, _fn;
     disposable = new Rx.CompositeDisposable;
-    for (obsOrValue = _i = 0, _len = options.length; _i < _len; obsOrValue = ++_i) {
-      css = options[obsOrValue];
-      disposable.add(sx.utils.bind(obsOrValue, function(x) {
-        target.css(css, x);
+    _fn = function() {
+      var css;
+      css = key;
+      return disposable.add(sx.utils.bind(obsOrValue, function(x) {
+        target.toggleClass(css, x);
       }));
+    };
+    for (key in options) {
+      obsOrValue = options[key];
+      _fn();
     }
     return disposable;
   };
@@ -269,7 +280,9 @@
     if (type == null) {
       type = options.type;
     }
-    obs = $(target).onAsObservable(type);
+    obs = $(target).onAsObservable(type).doAction(function(e) {
+      return e.preventDefault();
+    });
     if (typeof options === 'function') {
       return obs.subscribe(function(e) {
         options({

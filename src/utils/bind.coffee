@@ -6,3 +6,4 @@ sx.utils.bind = (obsOrValue, callback) ->
     return obsOrValue.subscribe callback
 
   callback obsOrValue
+  noDispose
