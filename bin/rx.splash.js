@@ -233,30 +233,6 @@
     return disposable;
   };
 
-  sx.binders.event = function(target, context, options, type) {
-    var obs;
-    if (type == null) {
-      type = options.type;
-    }
-    obs = $(target).onAsObservable(type);
-    if (typeof options === 'function') {
-      return obs.subscribe(function(e) {
-        options({
-          target: target,
-          context: context,
-          e: e
-        });
-      });
-    }
-    return obs.subscribe(function(e) {
-      options.onNext({
-        target: target,
-        context: context,
-        e: e
-      });
-    });
-  };
-
   sx.binders.foreach = function(target, context, obsArray) {
     var disposable, template;
     template = target.html().trim();
@@ -288,6 +264,30 @@
       }));
     });
     return disposable;
+  };
+
+  sx.binders.event = function(target, context, options, type) {
+    var obs;
+    if (type == null) {
+      type = options.type;
+    }
+    obs = $(target).onAsObservable(type);
+    if (typeof options === 'function') {
+      return obs.subscribe(function(e) {
+        options({
+          target: target,
+          context: context,
+          e: e
+        });
+      });
+    }
+    return obs.subscribe(function(e) {
+      options.onNext({
+        target: target,
+        context: context,
+        e: e
+      });
+    });
   };
 
   sx.binders.html = function(target, context, obsOrValue) {
