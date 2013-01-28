@@ -2,7 +2,31 @@
 (function() {
 
   $(function() {
-    return sx.bind(vm);
+    var examples;
+    examples = $('#examples-source').children().map(function() {
+      var target;
+      target = $(this);
+      return {
+        name: target.attr('data-name'),
+        description: (target.attr('data-description')) || '',
+        html: target.find('script[type="text/html"]').html().trim(),
+        js: target.find('script[type="text/html/js"]').html().trim()
+      };
+    });
+    examples.each(function() {
+      var encodedHtml, encodedJs, target;
+      encodedHtml = $('<div>').text(this.html).html().trim();
+      encodedJs = $('<div>').text(this.js).html().trim();
+      target = $("<div class=\"sx-example\">\n  <a href=\"#\" class=\"sx-example-toggle icon-chevron-down pull-right\"></a>\n  <h4>" + this.name + "</h4>\n  <p>" + this.description + "</p>\n  <div class=\"well\">" + this.html + "</div>\n  <div class=\"sx-example-code\">\n    <span>HTML</span>\n    <pre>" + encodedHtml + "</pre>\n    <span>JavaScript</span>\n    <pre>" + encodedJs + "</pre>\n  </div>\n</div>").appendTo('#examples');
+      return new Function(['target'], this.js).call(window, target);
+    });
+    return $('.sx-example').onAsObservable('click', '.sx-example-toggle').doAction(function(e) {
+      return e.preventDefault();
+    }).select(function(e) {
+      return $(e.currentTarget).closest('.sx-example').find('.sx-example-code');
+    }).subscribe(function(target) {
+      return target.slideToggle();
+    });
   });
 
 }).call(this);

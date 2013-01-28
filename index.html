@@ -2,41 +2,328 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <title>*Splash*</title>
+  <title>RxJS-Splash - Binders</title>
   <script src='./js/jquery.min.js'></script>
   <script src='./js/rx.min.js'></script>
   <script src='./js/rx.binding.min.js'></script>
   <script src='./js/rx.joinpatterns.min.js'></script>
+  <script src='./js/rx.experimental.min.js'></script>
   <script src='./js/rx.time.min.js'></script>
   <script src='./js/rx.jquery.min.js'></script>
-  <script src='./js/rx.splash.js'></script>
+  <script src='./js/rx.splash.min.js'></script>
   <script src='./index.js'></script>
   <link rel='stylesheet' href='./css/bootstrap.css' />
   <style>
-    .highlight {
-      background-color: red;
+    .sx-example {
+      border-left: 2px solid #ace;
+      border-radius: 5px;
+      padding-left: 8px;
+      position: relative;
+      left: -10px;
     }
+
+    .sx-example .sx-example-code {
+      display: none;
+    }
+
+    .sx-list-pills {
+      margin: 10px;
+    }
+
+    .sx-list-pills li {
+      border: 1px solid #999;
+      border-radius: 5px;
+      padding: 0px 7px;
+      margin: 2px;
+      display: inline-block;
+    }
+
+    .sx-list-pills li:hover {
+      color: white;
+      background: black;
+      border-color: white;
+      cursor: pointer;
+    }
+
   </style>
 </head>
 <body>
-
   <div class="container">
-
     <h2>RxJS-Splash</h2>
-    <p class="lead">Push-based <a href="http://knockoutjs.com/">Knockout</a>-style DOM bindings for Reactive Extensions</p>
-    <h4>Examples</h4>
-    <p>These documents are a work in progress.</p>
-    <ul>
-      <li>
-        <a href="pages/contact-manager/index.html">Contact Manager</a>
-      </li>
-    </ul>
-
-  <hr/>
-  <footer>
-    <p>© Christopher Harris 2013</p>
-  </footer>
+    <p class="lead">Binders</p>
+    <div id="examples">
+    </div>
+    <hr/>
+    <footer>
+      <p>© Christopher Harris 2013</p>
+    </footer>
   </div>
 
+  <div id="examples-source">
+    <div data-name="Text">
+      <script type="text/html">
+
+        <span data-splash="text: name"></span>
+
+      </script>
+      <script type="text/html/js">
+
+        var vm = { 
+          name: new Rx.BehaviorSubject('Christopher Harris')
+        };
+
+        sx.bind(vm, target);
+
+      </script>
+    </div>
+    <div data-name="Value">
+      <script type="text/html">
+
+        <div class="form-horizontal">
+          <div class="control-group">
+            <div class="control-label">default</div>
+            <div class="controls">
+              <input type="text" data-splash="value: name" />
+            </div>
+          </div>
+          <div class="control-group">
+            <div class="control-label">keyup</div>
+            <div class="controls">
+              <input type="text" data-splash="value: { source: name, on: 'keyup' }" />
+            </div>
+          </div>
+          <div class="control-group">
+            <div class="control-label">keypress</div>
+            <div class="controls">
+              <input type="text" data-splash="value: { source: name, on: 'keypress' }" />
+            </div>
+          </div>
+          <div class="control-group">
+            <div class="control-label">change + keypress</div>
+            <div class="controls">
+              <input type="text" data-splash="value: { source: name, on: 'keypress change' }" />
+            </div>
+          </div>
+          <div class="control-group">
+            <div class="control-label">afterkeydown</div>
+            <div class="controls">
+              <input type="text" data-splash="value: { source: name, on: 'afterkeydown' }" />
+            </div>
+          </div>
+          <div class="control-group">
+            <div class="control-label">blur</div>
+            <div class="controls">
+              <input type="text" data-splash="value: { source: name, on: 'blur' }" />
+            </div>
+          </div>
+        </div>
+
+      </script>
+      <script type="text/html/js">
+
+        var vm = { 
+          name: new Rx.BehaviorSubject('Christopher Harris')
+        };
+
+        sx.bind(vm, target);
+
+      </script>
+    </div>
+    <div data-name="Checked">
+      <script type="text/html">
+
+        <input type="checkbox" data-splash="checked: selected" />
+        <span data-splash="text: selected" />
+
+      </script>
+      <script type="text/html/js">
+
+        var vm = { 
+          selected: new Rx.BehaviorSubject(true)
+        };
+
+        sx.bind(vm, target);
+
+      </script>
+    </div>
+    <div data-name="HTML">
+      <script type="text/html">
+
+        <div data-splash="html: html"></div>
+        <textarea class="input-block-level" rows="4" data-splash="value: { source: html, on: 'afterkeydown' }"/>
+
+      </script>
+      <script type="text/html/js">
+
+        var vm = {
+          html: new Rx.BehaviorSubject('<h3>HTML</h3>\n<p class="lead">\n  How are you today?\n</p>')
+        };
+
+        sx.bind(vm, target);
+
+      </script>
+    </div>
+    <div data-name="CSS">
+      <script type="text/html">
+
+        <div class="form-horizontal">
+          <div class="control-group">
+            <div class="control-label">CSS Classes</div>
+            <div class="controls">
+              <label class="checkbox">
+                <input type="checkbox" name="type" data-splash="checked: isPrimary" /> btn-primary
+              </label>
+              <label class="checkbox">
+                <input type="checkbox" name="type" data-splash="checked: isMini" /> btn-mini
+              </label>
+              <label class="checkbox">
+                <input type="checkbox" name="type" data-splash="checked: isBlock" /> btn-block
+              </label>
+              <label class="checkbox">
+                <input type="checkbox" name="type" data-splash="checked: isDisabled" /> disabled
+              </label>
+            </div>
+          </div>
+          <div class="control-group">
+            <div class="controls">
+              <button class="btn" data-splash="css: {
+                'btn-primary': isPrimary,
+                'btn-mini': isMini,
+                'btn-block': isBlock,
+                'disabled': isDisabled
+              }">Button</button>
+            </div>
+          </div>
+        </div>
+        
+
+      </script>
+      <script type="text/html/js">
+
+        var vm = {
+          isPrimary: new Rx.BehaviorSubject(false),
+          isMini: new Rx.BehaviorSubject(false),
+          isBlock: new Rx.BehaviorSubject(false),
+          isDisabled: new Rx.BehaviorSubject(false)
+        };
+
+        sx.bind(vm, target);
+
+      </script>
+    </div>
+    <div data-name="Click">
+      <script type="text/html">
+
+        <div class="navbar">
+          <div class="navbar-inner">
+            <div class="nav">
+              <button class="btn btn-primary" data-splash="click: func">
+                Invoke Function
+              </button>
+              <button class="btn btn-primary" data-splash="click: subject">
+                Signal Subject
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <table class="table table-bordered table-condensed">
+          <thead>
+            <tr>
+              <th>Modifier</th>
+              <th>Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>None</td>
+              <td data-splash="text: value"></td>
+            </tr>
+            <tr>
+              <td>Delay</td>
+              <td data-splash="text: delayed"></td>
+            </tr>
+            <tr>
+              <td>Throttle</td>
+              <td data-splash="text: throttled"></td>
+            </tr>
+            <tr>
+              <td>Sample</td>
+              <td data-splash="text: sampled"></td>
+            </tr>
+          </tbody>
+        </table>
+
+      </script>
+      <script type="text/html/js">
+
+        var vm = {
+          subject: new Rx.Subject()
+        };
+
+        vm.func = function(data) {
+          vm.subject.onNext(data);
+        };
+
+        vm.value = vm.subject.select(function(x) { return new Date().getMilliseconds(); });
+        vm.delayed = vm.value.delay(250);
+        vm.throttled = vm.value.throttle(250);
+        vm.sampled = vm.value.sample(250);
+
+        sx.bind(vm, target);
+
+      </script>
+    </div>
+    <div data-name="Foreach">
+      <script type="text/html">
+
+        <div class="navbar">
+          <div class="navbar-inner">
+            <div class="nav pull-right">
+              <button class="btn" data-splash="click: add">
+                <i class="icon-plus"></i>
+              </button>
+              <button class="btn" data-splash="click: clear">
+                <i class="icon-minus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <p>Click to remove</p>
+        <ul data-splash="foreach: items" class="sx-list-pills">
+          <li data-splash="click: $root.remove">
+            <span data-splash="text: $data"></span>
+          </li>
+        </ul>
+
+      </script>
+      <script type="text/html/js">
+
+        var number = Rx.Observable.interval(250);
+
+        var vm = {
+          items: new sx.ObservableArray([1, 2, 3, 4, 5]),
+          add: new Rx.Subject(),
+          remove: new Rx.Subject(),
+          clear: new Rx.Subject()
+        };
+
+        vm.add.subscribe(function(data) {
+          vm.items.push(number);
+        });
+
+        vm.remove.subscribe(function(data) {
+          vm.items.remove(data.context.vm);
+        });
+
+        vm.clear.subscribe(function(data) {
+          vm.items.splice(0);
+        });
+
+        sx.bind(vm, target);
+
+      </script>
+    </div>
+  </div>
 </body>
 </html>
