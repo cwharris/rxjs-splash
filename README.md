@@ -1,7 +1,9 @@
 RxJS-Splash
 ===========
 
-Push-based [Knockout](http://knockoutjs.com/)-style DOM bindings for Reactive Extensions
+Push-based MVVM DOM bindings for Reactive Extensions
+
+Check out these [live examples](http://cwharris.github.com/rxjs-splash).
 
 Example
 -------
