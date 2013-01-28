@@ -1,0 +1,10 @@
+.DS_Store
+
+*.js
+!bin/rx.splash.js
+!bin/rx.splash-min.js
+
+node_modules
+
+*.sublime-project
+*.sublime-workspace
