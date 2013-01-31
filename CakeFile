@@ -1,0 +1,4 @@
+{spawn, exec} = require 'child_process'
+
+task 'sbuild', ->
+  exec 'jade -p ./bin --out ./bin ./src'
