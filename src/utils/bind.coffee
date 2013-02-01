@@ -1,9 +1,13 @@
 #import core.globals
 
-sx.utils.bind = (obsOrValue, callback) ->
+sx.utils.bind = (obsOrValue, obsOrCallback) ->
 
-  if obsOrValue.subscribe
-    return obsOrValue.subscribe callback
+  if typeof obsOrValue.subscribe is 'function'
+    return obsOrValue.subscribe obsOrCallback
 
-  callback obsOrValue
+  if typeof obsOrCallback.onNext is 'function'
+    obsOrCallback.onNext obsOrValue
+  else
+    obsOrCallback obsOrValue
+
   noDispose

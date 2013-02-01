@@ -1,6 +1,7 @@
 #import core.globals
 
 sx.utils.wrap = (valueOrBehavior) ->
-  if valueOrBehavior.value and valueOrBehavior.subscribe
+  if typeof valueOrBehavior.subscribe is 'function'
     return valueOrBehavior
+
   new Rx.BehaviorSubject valueOrBehavior

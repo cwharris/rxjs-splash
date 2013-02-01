@@ -16,12 +16,36 @@
     dispose: noop
   };
 
-  sx.utils.bind = function(obsOrValue, callback) {
-    if (obsOrValue.subscribe) {
-      return obsOrValue.subscribe(callback);
+  sx.utils.bind = function(obsOrValue, obsOrCallback) {
+    if (typeof obsOrValue.subscribe === 'function') {
+      return obsOrValue.subscribe(obsOrCallback);
     }
-    callback(obsOrValue);
+    if (typeof obsOrCallback.onNext === 'function') {
+      obsOrCallback.onNext(obsOrValue);
+    } else {
+      obsOrCallback(obsOrValue);
+    }
     return noDispose;
+  };
+
+  sx.utils.combine = function(sources) {
+    var key, keys, value, values;
+    keys = [];
+    values = [];
+    for (key in sources) {
+      value = sources[key];
+      keys.push(key);
+      values.push(sx.utils.wrap(value));
+    }
+    return Rx.Observable.combineLatest(values, function() {
+      var i, params, _i, _len;
+      params = {};
+      for (i = _i = 0, _len = keys.length; _i < _len; i = ++_i) {
+        key = keys[i];
+        params[key] = arguments[i];
+      }
+      return params;
+    });
   };
 
   sx.utils.parseBindingOptions = function(param, options) {
@@ -63,10 +87,16 @@
   };
 
   sx.utils.wrap = function(valueOrBehavior) {
-    if (valueOrBehavior.value && valueOrBehavior.subscribe) {
+    if (typeof valueOrBehavior.subscribe === 'function') {
       return valueOrBehavior;
     }
     return new Rx.BehaviorSubject(valueOrBehavior);
+  };
+
+  sx.computed = function(options) {
+    return Rx.Observable.create(function(o) {
+      return sx.utils.combine(options.params).select(options.read).subscribe(o);
+    });
   };
 
   sx.bind = function(vm, target) {
@@ -75,30 +105,6 @@
       vm: vm,
       vmRoot: vm,
       vmParent: void 0
-    });
-  };
-
-  sx.computed = function(options) {
-    var key, keys, source, value, values, _ref;
-    keys = [];
-    values = [];
-    _ref = options.params;
-    for (key in _ref) {
-      value = _ref[key];
-      keys.push(key);
-      values.push(sx.utils.wrap(value));
-    }
-    source = sx.utils.combineLatest(values).select(function(values) {
-      var i, params, _i, _len;
-      params = {};
-      for (i = _i = 0, _len = keys.length; _i < _len; i = ++_i) {
-        key = keys[i];
-        params[key] = values[i];
-      }
-      return params;
-    });
-    return Rx.Observable.create(function(o) {
-      return source.select(options.read).subscribe(o);
     });
   };
 
@@ -275,6 +281,30 @@
     return disposable;
   };
 
+  sx.binders.event = function(target, context, options, type) {
+    var obs;
+    if (type == null) {
+      type = options.type;
+    }
+    obs = $(target).onAsObservable(type);
+    if (typeof options === 'function') {
+      return obs.subscribe(function(e) {
+        options({
+          target: target,
+          context: context,
+          e: e
+        });
+      });
+    }
+    return obs.subscribe(function(e) {
+      options.onNext({
+        target: target,
+        context: context,
+        e: e
+      });
+    });
+  };
+
   sx.binders.foreach = function(target, context, obsArray) {
     var disposable, template;
     template = target.html().trim();
@@ -306,30 +336,6 @@
       }));
     });
     return disposable;
-  };
-
-  sx.binders.event = function(target, context, options, type) {
-    var obs;
-    if (type == null) {
-      type = options.type;
-    }
-    obs = $(target).onAsObservable(type);
-    if (typeof options === 'function') {
-      return obs.subscribe(function(e) {
-        options({
-          target: target,
-          context: context,
-          e: e
-        });
-      });
-    }
-    return obs.subscribe(function(e) {
-      options.onNext({
-        target: target,
-        context: context,
-        e: e
-      });
-    });
   };
 
   sx.binders.html = function(target, context, obsOrValue) {
