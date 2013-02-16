@@ -5,3 +5,4 @@ sx = window.sx =
 
 noop = ->
 noDispose = dispose: noop
+identitySelect = (x) -> x

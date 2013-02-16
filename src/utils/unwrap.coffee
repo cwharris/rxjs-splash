@@ -1,6 +1,6 @@
 #import core.globals
 
 sx.utils.unwrap = (valueOrBehavior) ->
-  if valueOrBehavior.value and valueOrBehavior.subscribe
+  if typeof valueOrBehavior.subscribe is 'function'
     return valueOrBehavior.value 
   valueOrBehavior
