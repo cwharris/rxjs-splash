@@ -11,9 +11,17 @@ module.exports = function (grunt) {
                     'src/meta/intro.js',
                     'src/meta/header.js',
 
-                    'src/bind.js',
-                    'src/internal/bind.js',
+                    'src/util/link.js',
+                    'src/util/wrap.js',
+                    'src/util/combine.js',
+                    
                     'src/internal/parse.js',
+                    'src/internal/formatOptions.js',
+                    'src/internal/bind.js',
+
+                    'src/bind.js',
+
+                    'src/binders/text.js',
 
                     'src/meta/exports.js',
                     'src/meta/outro.js'
@@ -35,7 +43,7 @@ module.exports = function (grunt) {
         },
         jshint: {
             all: [
-                'rx.splash.js',
+                'bin/rx.splash.js',
             ]
         }
     });
@@ -51,17 +59,15 @@ module.exports = function (grunt) {
 
     grunt.registerTask('lint', [
         'concat:basic',
-
         'jshint'
     ]);
 
     // Default task
     grunt.registerTask('default', [
         'concat:basic',
-
         'uglify:basic',
-
-        'qunit'
+        // 'jshint',
+        // 'qunit',
     ]);    
 
 };

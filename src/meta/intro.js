@@ -11,5 +11,9 @@
      * @name sx
      * @type Object
      */
-    var sx = { internal: { } };
+    var sx = {
+        util: { },
+        internal: { },
+        binders: { },
+    };
     

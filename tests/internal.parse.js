@@ -1,6 +1,8 @@
 (function (window) {
 
-  test('internal.parse can parse', function () {
+  module('internal.parse');
+
+  test('can parse', function () {
 
     var dom = $('<div data-splash="text: obs"></div>')[0];
 

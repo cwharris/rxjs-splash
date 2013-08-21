@@ -4,5 +4,9 @@
       } else if (typeof element === 'string') {
         element = document.getElementById(element);
       }
-      return sx.internal.bind(element, vm).subscribe(onNext, onError, onComplete);
+      return sx.internal.bind(element, {
+        vm: vm,
+        vmRoot: vm,
+        vmParent: undefined
+      }).subscribe(onNext, onError, onComplete);
     };

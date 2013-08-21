@@ -18,24 +18,57 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
      * @name sx
      * @type Object
      */
-    var sx = { internal: { } };
+    var sx = {
+        util: { },
+        internal: { },
+        binders: { },
+    };
     
     // Defaults
     function noop() { }
     function identity(x) { return x; }
     
-    sx.bind = function (vm, element, onNext, onError, onComplete) {
-      if (element === undefined) {
-        element = document.body;
-      } else if (typeof element === 'string') {
-        element = document.getElementById(element);
-      }
-      return sx.internal.bind(element, vm).subscribe(onNext, onError, onComplete);
-    };
-    sx.internal.bind = function (element, vm) {
-      return new Rx.Subject();
-    };
+    var emptyDisposable = Rx.Disposable.empty;
     
+    sx.util.link = function (obsOrValue, obsOrCallback) {
+
+      if (typeof obsOrValue.subscribe === 'function') {
+        return obsOrValue.subscribe(obsOrCallback)
+      }
+
+      if (typeof obsOrCallback.onNext === 'function') {
+        obsOrCallback.onNext(obsOrValue)
+      } else {
+        obsOrCallback(obsOrValue)
+      }
+
+      return emptyDisposable;
+    };
+
+    sx.util.wrap = function (valueOrObservable) {
+      if (typeof valueOrObservable.subscribe === 'function') {
+        return valueOrObservable;
+      }
+      return new Rx.BehaviorSubject(valueOrObservable);
+    };
+    sx.util.combine = function (template) {
+
+      var keys = [];
+      var values = [];
+
+      for (var key in template) {
+        keys.push(key);
+        values.push(sx.util.wrap(template[key])); // wastes memory?
+      }
+
+      return Rx.Observable.combineLatest(values, function () {
+        var params = { };
+        for (var i = 0, len = keys.length; i < len; i++) {
+          params[keys[i]] = arguments[i];
+        }
+        return params;
+      });
+    };
     sx.internal.parse = function (element, context) {
       var binding = element.getAttribute('data-splash');
       if (binding == null) {
@@ -54,6 +87,59 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
       return new Function(keys, "return { " + binding + " };").apply(null, values);
     };
     
+    sx.internal.formatOptions = function (options) {
+
+      var typeOfOptions = typeof options;
+
+      // Most Likely Scenario
+      if (
+        'function' === typeOfOptions ||
+        'string' === typeOfOptions ||
+        'number' === typeOfOptions ||
+        'function' === typeof options.subscribe ||
+        'function' === typeof options.onNext
+        ) {
+        return {
+          source: options
+        };
+      }
+
+      return options;
+    };
+    
+    sx.internal.bind = function (element, context) {
+      return Rx.Observable.create(function (o) {
+        var bindings = sx.internal.parse(element, context);
+        for (var name in bindings) {
+          var options = sx.internal.formatOptions(bindings[name]);
+          var binding = sx.binders[name](element, context, options);
+          o.onNext(binding);
+        }
+        var children = element.children;
+        for (var i = 0, len = children.length; i < len; i++) {
+          o.onNext(sx.internal.bind(children[i], context));
+        }
+      }).mergeObservable();
+    };
+    
+    sx.bind = function (vm, element, onNext, onError, onComplete) {
+      if (element === undefined) {
+        element = document.body;
+      } else if (typeof element === 'string') {
+        element = document.getElementById(element);
+      }
+      return sx.internal.bind(element, {
+        vm: vm,
+        vmRoot: vm,
+        vmParent: undefined
+      }).subscribe(onNext, onError, onComplete);
+    };
+
+    sx.binders.text = function (element, context, options) {
+      return options.source.doAction(function (x) {
+        element.textContent = x;
+      });
+    };
     // Check for AMD
     if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) {
         window.sx = sx;
