@@ -1,5 +1,5 @@
     sx.internal.parse = function (element, context) {
-      var binding = target.getAttribute('data-splash');
+      var binding = element.getAttribute('data-splash');
       if (binding == null) {
         return null;
       }
@@ -13,6 +13,6 @@
         values.push(vm[key]);
       }
 
-      return new Function(keys, "return { #{binding} };").apply(null, values);
+      return new Function(keys, "return { " + binding + " };").apply(null, values);
     };
     
