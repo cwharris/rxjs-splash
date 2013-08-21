@@ -24,19 +24,36 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     function noop() { }
     function identity(x) { return x; }
     
-    sx.bind = function (vm, element) {
+    sx.bind = function (vm, element, onNext, onError, onComplete) {
       if (element === undefined) {
         element = document.body;
       } else if (typeof element === 'string') {
         element = document.getElementById(element);
       }
-      sx.internal.bind(element, vm);
+      return sx.internal.bind(element, vm).subscribe(onNext, onError, onComplete);
     };
-
     sx.internal.bind = function (element, vm) {
-      console.log(arguments);
+      return new Rx.Subject();
     };
+    
+    sx.internal.parse = function (element, context) {
+      var binding = target.getAttribute('data-splash');
+      if (binding == null) {
+        return null;
+      }
 
+      var vm = context.vm;
+      var keys = ['$data', '$root', '$parent'];
+      var values = [vm, context.vmRoot, context.vmParent];
+
+      for (var key in vm) {
+        keys.push(key);
+        values.push(vm[key]);
+      }
+
+      return new Function(keys, "return { #{binding} };").apply(null, values);
+    };
+    
     // Check for AMD
     if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) {
         window.sx = sx;

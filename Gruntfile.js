@@ -11,7 +11,9 @@ module.exports = function (grunt) {
                     'src/meta/intro.js',
                     'src/meta/header.js',
 
-                    'src/rx.splash.js',
+                    'src/bind.js',
+                    'src/internal/bind.js',
+                    'src/internal/parse.js',
 
                     'src/meta/exports.js',
                     'src/meta/outro.js'
