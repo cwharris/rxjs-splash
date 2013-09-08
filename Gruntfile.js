@@ -14,6 +14,7 @@ module.exports = function (grunt) {
                     'src/util/link.js',
                     'src/util/wrap.js',
                     'src/util/combine.js',
+                    'src/util/arrayDiff.js',
                     
                     'src/internal/parse.js',
                     'src/internal/formatOptions.js',

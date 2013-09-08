@@ -51,6 +51,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
       }
       return new Rx.BehaviorSubject(valueOrObservable);
     };
+    
     sx.util.combine = function (template) {
 
       var keys = [];
@@ -68,6 +69,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         }
         return params;
       });
+    };
+    
+    sx.util.arrayDiff = function (template) {
+      return [];
     };
     sx.internal.parse = function (element, context) {
       var binding = element.getAttribute('data-splash');
