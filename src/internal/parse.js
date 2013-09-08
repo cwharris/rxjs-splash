@@ -1,6 +1,6 @@
     sx.internal.parse = function (element, context) {
       var binding = element.getAttribute('data-splash');
-      if (binding == null) {
+      if (!binding) {
         return null;
       }
 

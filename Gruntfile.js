@@ -42,6 +42,9 @@ module.exports = function (grunt) {
             all: ['tests/*.html']
         },
         jshint: {
+            options: {
+                evil: true
+            },
             all: [
                 'bin/rx.splash.js',
             ]
@@ -66,8 +69,8 @@ module.exports = function (grunt) {
     grunt.registerTask('default', [
         'concat:basic',
         'uglify:basic',
-        // 'jshint',
-        // 'qunit',
+        'jshint',
+        'qunit',
     ]);    
 
 };
