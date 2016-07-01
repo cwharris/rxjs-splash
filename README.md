@@ -1,5 +1,6 @@
 RxJS-Splash
 ===========
+*This project is no longer maintained. Please see [React](https://github.com/facebook/react) + [Redux](https://github.com/reactjs/redux), or [CycleJS](https://github.com/cyclejs) for good examples of how to manage UI.*
 
 Push-based MVVM DOM bindings for Reactive Extensions
 
@@ -122,7 +123,3 @@ Splash makes un-binding as easy as calling dispose.
       dispose: function() { binding.dispose(); }
     });
 ```
-
-News
-----
-I'll tweet about significant changes made to splash: [@cwharris](http://www.twitter.com/cwharris)
